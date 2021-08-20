@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<voicemail xmlns="http://www.innovaphone.com/xsd/voicemail6.xsd">
+    <function define="Main">
+	<event type="timer" name="vbguard">
+  		<pbx-disc /> 
+  	</event>
+
+	<timer name="vbguard" sec="60" barge-in="true" />
+	<pbx-getcallinfo out-cgpn="$cgpn" out-cdpn="$cdpn" out-leg2="$leg2" />
+        <lib-strcat string="$cgpn" string2="_personal_greet.g711a" out-string="$res" />
+
+	<store-get root="" name="$res" out-url="$greeting" />
+	<pbx-prompt url="$greeting" />
+	<if cond="$leg2">
+		<pbx-disc/>
+	</if>
+	<assign out="$First-IN" value="true" />
+	<event type="dtmf" block="false">
+		<if cond="$First-IN">
+			<store-get root="" name="beep.g711a" out-url="$beep" /> 
+			<pbx-prompt url="$beep" /> 
+			<assign out="$First-IN" value="false" />
+			<store-get root="" name="$res" out-url="$url" /> 
+	  		<pbx-record url="$url" sec="60"/>
+		</if>	
+		<else>
+			<assign out="$First-IN" value="true" />
+		</else>
+	</event>
+	<store-get root="" name="Pgreet.g711a" out-url="$Pgreet" /> 
+	<pbx-prompt url="$Pgreet" /> 
+	<store-get root="" name="silence.g711a" out-url="$silence" /> 
+	<assign out="$menu-ok" value="false" /> 
+	<while notcond="$menu-ok">
+		<assign out="$Teiln-timeout" value="true" /> 
+  		<pbx-prompt url="$silence" sec="4" repeat="true" /> 
+			<if cond="$Teiln-timeout">
+				<store-get root="" name="$res" out-url="$greeting" />
+				<pbx-prompt url="$greeting" />
+				<pbx-prompt url="$Pgreet" /> 
+				<assign out="$Teiln-timeout" value="false" /> 
+			</if>
+  	</while>
+    </function>
+</voicemail>
+
+<!-- Auto Greeting VoiceMail XML Script wiki-src/xml/autogreet 1,0,0,0 (C) innovaphone AG 2010-2010 -->
