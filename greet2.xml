@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <voicemail xmlns="http://www.innovaphone.com/xsd/voicemail6.xsd">
+<!-- == Greeting 2 -checking direction innovaphone AG 2017 KWA -->
     <function define="Main">
 	<event type="timer" name="vbguard">
+		<store-del root="" name="inTS.txt"/> 
   		<pbx-disc /> 
   	</event>
-
 	<timer name="vbguard" sec="60" barge-in="true" />
 	<pbx-getcallinfo out-cgpn="$cgpn" out-cdpn="$cdpn" out-leg2="$leg2" />
         <lib-strcat string="$cgpn" string2="_personal_greet.g711a" out-string="$res" />
 
-	<store-get root="" name="$res" out-url="$greeting" />
-	<pbx-prompt url="$greeting" />
-	<if cond="$leg2">
-		<pbx-disc/>
-	</if>
+     <if notcond="$leg2">
 	<assign out="$First-IN" value="true" />
 	<event type="dtmf" block="false">
 		<if cond="$First-IN">
@@ -41,6 +38,30 @@
 				<assign out="$Teiln-timeout" value="false" /> 
 			</if>
   	</while>
+      </if>
+	
+	<lib-strcat string="$cgpn" string2="_inTS.txt" out-string="$res" />
+	<store-cookie root="" name="$res" out="$TS"/> 
+	<add value="$TS" value2="1" out="$TSpe" /> 
+	<store-getstat root="" name="NULL" out-min="$min"/>
+	<assign out="$deltaok" value="false" /> 
+	<switch var="$TS">
+		<case equal="$min">
+			<assign out="$deltaok" value="true" /> 
+		</case>
+		<case equal="$TSpe">
+			<assign out="$deltaok" value="true" /> 
+		</case>
+		<case equal="00">
+			<assign out="$deltaok" value="true" /> 
+		</case>
+        </switch>
+	<store-del root="" name="$res"/> 
+	<if cond="$deltaok">
+		<lib-strcat string="$cgpn" string2="_personal_greet.g711a" out-string="$res" />
+		<store-get root="" name="$res" out-url="$greeting" />
+		<pbx-prompt url="$greeting" />
+	</if>
     </function>
 </voicemail>
 

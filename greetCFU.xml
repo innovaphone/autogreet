@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<voicemail xmlns="http://www.innovaphone.com/xsd/voicemail6.xsd">
+<!-- == Greeting 2 -checking direction - this is the xml target for the CFU - innovaphone AG 2017 KWA -->
+    <function define="Main">
+	<store-getstat root="" name="NULL" out-min="$min"/>
+	<pbx-getcallinfo out-cgpn="$cgpn" out-cdpn="$cdpn" out-leg2="$leg2" />
+	<lib-strcat string="$leg2" string2="_inTS.txt" out-string="$res" />
+	<store-cookie root="" name="$res" value="$min"/> 
+	<pbx-xfer e164="$leg2" />
+     </function>
+</voicemail>
+
+<!-- Auto Greeting VoiceMail XML Script wiki-src/xml/AutoGreet 1,0,1,0 (C) innovaphone AG 2010-2017 -->
