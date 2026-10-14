@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<voicemail xmlns="http://www.innovaphone.com/xsd/voicemail6.xsd">
+<voicemail xmlns="https://www.innovaphone.com/xsd/voicemail6.xsd">
 <!-- == Greeting 2 -checking direction - this is the xml target for the CFU - innovaphone AG 2017 KWA -->
     <function define="Main">
 	<store-getstat root="" name="NULL" out-min="$min"/>
